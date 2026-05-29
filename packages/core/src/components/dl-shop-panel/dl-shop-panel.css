@@ -189,7 +189,14 @@
     grid-template-columns: repeat(6, 1fr);
 }
 
-/* Tier price labels overlaid near the background tier banners */
+/* Tier price labels are positioned in the background image coordinate space. */
+.tier-price-layer {
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: 1;
+}
+
 .tier-price {
     position: absolute;
     display: inline-flex;
@@ -200,11 +207,13 @@
     font-weight: 700;
     line-height: 1;
     color: rgb(107, 166, 128);
+    left: var(--tier-price-left);
+    top: var(--tier-price-top);
     text-shadow: rgba(0, 0, 0, 0.7) 0px 1px 3px;
-    z-index: 1;
     pointer-events: none;
     white-space: nowrap;
     transform: rotate(-5deg);
+    transform-origin: left top;
     user-select: none;
 }
 
@@ -222,43 +231,13 @@
     filter: none;
 }
 
-/* Position each tier price to align with the background TIER labels */
-.tier-price.tier-1 {
-    top: 29%;
-    left: 4%;
-}
-
-.tiers.spirit .tier-price.tier-1, .tiers.vitality .tier-price.tier-1 {
-    top: 31%;
-    left: 5%;
-}
-
-.tier-price.tier-2 {
-    font-size: 26px;
-    top: 2%;
-    left: -0.8rem;
-}
-
+.tier-price.tier-2,
 .tier-price.tier-3 {
     font-size: 26px;
-    top: -6%;
-    left: -3%;
-}
-
-.tiers.spirit .tier-price.tier-3, .tiers.vitality .tier-price.tier-3 {
-    left: 5%;
-    top: -1%;
 }
 
 .tier-price.tier-4 {
     font-size: 28px;
-    top: -8%;
-    left: -3%;
-}
-
-.tiers.spirit .tier-price.tier-4, .tiers.vitality .tier-price.tier-4 {
-    top: -3.7%;
-    left: -3%;
 }
 
 /* Highlight / dim effect on hover */

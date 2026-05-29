@@ -1,6 +1,6 @@
 import { Component, Prop, State, Watch, Element, h } from '@stencil/core';
 import { Item, ItemSlotType, Language } from '../../types';
-import { fetchItems, fetchGenericData } from '../../api/client';
+import { fetchItems, fetchGenericData, ShopTierPricePositionSet } from '../../api/client';
 import { configState, onConfigChange } from '../../store/config-store';
 import { shopBackground, shopTabShape, shopTabIcon, shopTabEdgeOverlay, soulIcon } from '../../utils/assets';
 import { ComponentItemInfo } from '../dl-item-tooltip/dl-item-tooltip';
@@ -14,6 +14,29 @@ const CATEGORIES: { label: string; slot: ItemSlotType; color: string }[] = [
 const VALID_TABS = new Set<string>(CATEGORIES.map(c => c.slot));
 
 const TIERS = [1, 2, 3, 4] as const;
+
+type Tier = typeof TIERS[number];
+
+const DEFAULT_TIER_PRICE_POSITIONS: ShopTierPricePositionSet = {
+  weapon: {
+    1: { left: '3.4%', top: '16.1%' },
+    2: { left: '46.6%', top: '3.1%' },
+    3: { left: '3.4%', top: '51.5%' },
+    4: { left: '63%', top: '51.5%' },
+  },
+  vitality: {
+    1: { left: '3.4%', top: '16.1%' },
+    2: { left: '46.6%', top: '3.1%' },
+    3: { left: '3.4%', top: '51.5%' },
+    4: { left: '46.6%', top: '51%' },
+  },
+  spirit: {
+    1: { left: '3.4%', top: '16.1%' },
+    2: { left: '46.6%', top: '3.1%' },
+    3: { left: '3.4%', top: '51.5%' },
+    4: { left: '46.6%', top: '51%' },
+  },
+};
 
 @Component({
   tag: 'dl-shop-panel',
@@ -39,6 +62,7 @@ export class DlShopPanel {
   @State() private _loading = false;
   @State() private _activeTab: ItemSlotType = 'weapon';
   @State() private _tierPrices: number[] = [];
+  @State() private _tierPricePositions: ShopTierPricePositionSet = DEFAULT_TIER_PRICE_POSITIONS;
   @State() private _highlightedItems: Set<string> | null = null;
   private _highlightSource: string | null = null;
 
@@ -223,6 +247,7 @@ export class DlShopPanel {
     try {
       const data = await fetchGenericData();
       this._tierPrices = data.item_price_per_tier;
+      this._tierPricePositions = data.shop_tier_price_positions ?? DEFAULT_TIER_PRICE_POSITIONS;
     } catch {
       this._tierPrices = [];
     }
@@ -236,6 +261,10 @@ export class DlShopPanel {
 
   private handleTabClick(slot: ItemSlotType) {
     this._activeTab = slot;
+  }
+
+  private getTierPricePosition(slot: ItemSlotType, tier: Tier) {
+    return this._tierPricePositions[slot]?.[tier] ?? DEFAULT_TIER_PRICE_POSITIONS[slot]?.[tier];
   }
 
   render() {
@@ -276,17 +305,22 @@ export class DlShopPanel {
           class={{ 'tiers': true, [this._activeTab]: true }}
           style={{ backgroundImage: `url("${shopBackground(this._activeTab)}")` }}
         >
+          <div class="tier-price-layer" aria-hidden="true">
+            {TIERS.map(tier => {
+              const price = this._tierPrices[tier];
+              const position = this.getTierPricePosition(this._activeTab, tier);
+              return price != null && position ? (
+                <div class={{ 'tier-price': true, [`tier-${tier}`]: true }} style={{ '--tier-price-left': position.left, '--tier-price-top': position.top }}>
+                  <img class="soul-icon" src={soulIcon()} alt="" />
+                  <span>{price.toLocaleString()}</span>
+                </div>
+              ) : null;
+            })}
+          </div>
           {TIERS.map(tier => {
             const items = this.getItemsBySlotAndTier(this._activeTab, tier);
-            const price = this._tierPrices[tier];
             return (
               <div class={{ 'tier-section': true, [`tier-${tier}`]: true }}>
-                {price != null && (
-                  <div class={{ 'tier-price': true, [`tier-${tier}`]: true }}>
-                    <img class="soul-icon" src={soulIcon()} alt="" />
-                    <span>{price.toLocaleString()}</span>
-                  </div>
-                )}
                 {items.length > 0 && (
                   <div class={{ 'mods-grid': true, [`tier-${tier}`]: true }}>
                     {items.map(item => {

@@ -6,8 +6,16 @@ const cache = new Map<Language, Promise<Item[]>>();
 
 let genericDataCache: Promise<GenericData> | null = null;
 
+export interface ShopTierPricePosition {
+  left: string;
+  top: string;
+}
+
+export type ShopTierPricePositionSet = Partial<Record<ItemSlotType, Partial<Record<string, ShopTierPricePosition>>>>;
+
 export interface GenericData {
   item_price_per_tier: number[];
+  shop_tier_price_positions?: ShopTierPricePositionSet;
 }
 
 export function fetchGenericData(): Promise<GenericData> {
