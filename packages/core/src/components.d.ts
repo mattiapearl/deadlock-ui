@@ -158,6 +158,18 @@ export namespace Components {
           * Override language for item names only. Tooltip content uses the global language.
          */
         "itemNameLanguage"?: Language;
+        /**
+          * Override the Spirit tab background image URL.
+         */
+        "shopBackgroundSpirit"?: string;
+        /**
+          * Override the Vitality tab background image URL.
+         */
+        "shopBackgroundVitality"?: string;
+        /**
+          * Override the Weapon tab background image URL.
+         */
+        "shopBackgroundWeapon"?: string;
     }
 }
 export interface DlItemCardCustomEvent<T> extends CustomEvent<T> {
@@ -370,6 +382,18 @@ declare namespace LocalJSX {
           * Override language for item names only. Tooltip content uses the global language.
          */
         "itemNameLanguage"?: Language;
+        /**
+          * Override the Spirit tab background image URL.
+         */
+        "shopBackgroundSpirit"?: string;
+        /**
+          * Override the Vitality tab background image URL.
+         */
+        "shopBackgroundVitality"?: string;
+        /**
+          * Override the Weapon tab background image URL.
+         */
+        "shopBackgroundWeapon"?: string;
     }
 
     interface DlItemCardAttributes {
@@ -406,6 +430,9 @@ declare namespace LocalJSX {
         "hoverEffect": 'none' | 'scale';
         "disableHighlight": boolean;
         "itemNameLanguage": Language;
+        "shopBackgroundWeapon": string;
+        "shopBackgroundVitality": string;
+        "shopBackgroundSpirit": string;
     }
 
     interface IntrinsicElements {

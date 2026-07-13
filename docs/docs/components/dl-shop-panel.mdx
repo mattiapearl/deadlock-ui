@@ -28,6 +28,9 @@ Displays the full item shop with category tabs (Weapon, Vitality, Spirit) and ti
 | `hover-effect` | `"none"` \| `"scale"` | `"scale"` | Hover effect on item cards |
 | `disable-highlight` | `boolean` | `false` | Disables the highlight effect that dims unrelated items on hover/click |
 | `item-name-language` | [`Language`](/docs/types#language) | — | Override language for item names only. Tooltip content uses the global language set via [`dl-provider`](/docs/components/dl-provider) |
+| `shop-background-weapon` | `string` | Deadlock Assets API URL | Override the Weapon tab background image URL |
+| `shop-background-vitality` | `string` | Deadlock Assets API URL | Override the Vitality tab background image URL |
+| `shop-background-spirit` | `string` | Deadlock Assets API URL | Override the Spirit tab background image URL |
 
 ## Setting the Initial Tab
 
@@ -42,4 +45,16 @@ Override item names to a different language while keeping tooltip content in the
 
 ```html
 <dl-shop-panel item-name-language="brazilian"></dl-shop-panel>
+```
+
+## Optimized Shop Backgrounds
+
+Provide independent image URLs for all three tabs when your application serves resized or compressed derivatives. Unset attributes continue to use the Deadlock Assets API originals.
+
+```html
+<dl-shop-panel
+  shop-background-weapon="/shop/backgrounds/weapon.webp"
+  shop-background-vitality="/shop/backgrounds/vitality.webp"
+  shop-background-spirit="/shop/backgrounds/spirit.webp"
+></dl-shop-panel>
 ```

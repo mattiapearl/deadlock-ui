@@ -35,6 +35,15 @@ export class DlShopPanel {
   /** Override language for item names only. Tooltip content uses the global language. */
   @Prop({ attribute: 'item-name-language' }) itemNameLanguage?: Language;
 
+  /** Override the Weapon tab background image URL. */
+  @Prop({ attribute: 'shop-background-weapon' }) shopBackgroundWeapon?: string;
+
+  /** Override the Vitality tab background image URL. */
+  @Prop({ attribute: 'shop-background-vitality' }) shopBackgroundVitality?: string;
+
+  /** Override the Spirit tab background image URL. */
+  @Prop({ attribute: 'shop-background-spirit' }) shopBackgroundSpirit?: string;
+
   @State() private _items: Item[] = [];
   @State() private _loading = false;
   @State() private _activeTab: ItemSlotType = 'weapon';
@@ -238,6 +247,15 @@ export class DlShopPanel {
     this._activeTab = slot;
   }
 
+  private backgroundFor(slot: ItemSlotType) {
+    const override = slot === 'weapon'
+      ? this.shopBackgroundWeapon
+      : slot === 'vitality'
+        ? this.shopBackgroundVitality
+        : this.shopBackgroundSpirit;
+    return override?.trim() || shopBackground(slot);
+  }
+
   render() {
     if (this._loading) {
       return <div class="shop"><div class="loading">Loading items...</div></div>;
@@ -274,7 +292,7 @@ export class DlShopPanel {
         </div>
         <div
           class={{ 'tiers': true, [this._activeTab]: true }}
-          style={{ backgroundImage: `url("${shopBackground(this._activeTab)}")` }}
+          style={{ backgroundImage: `url(${JSON.stringify(this.backgroundFor(this._activeTab))})` }}
         >
           {TIERS.map(tier => {
             const items = this.getItemsBySlotAndTier(this._activeTab, tier);
